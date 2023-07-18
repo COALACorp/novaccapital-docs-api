@@ -12,6 +12,29 @@ const upload = multer({
     storage: multer.memoryStorage(),
 });
 
+app.get("/template/:fileName", async (req, res) => {
+    try {
+        const { fileName } = req.params;
+        
+        if (!fileName)
+            return res.status(400).json({ message: "Missing file name", request: req.params });
+
+        const fileKey = `docs-to-download/${fileName}`;
+        
+        const command = new GetObjectCommand({
+            Bucket: "novacapitaldocs",
+            Key: fileKey,
+        });
+
+        const signedUrl = await getSignedUrl(s3, command, { expiresIn: 5 }); // URL expiration time in seconds (adjust as needed)
+
+        res.status(200).json({ url: signedUrl });
+    } catch (error) {
+        console.error("Error downloading template:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 app.get("/download/:guid/:applicationId/:fileName", async (req, res) => {
     try {
         const { guid, applicationId, fileName } = req.params;
@@ -98,8 +121,8 @@ app.delete("/delete/:guid/:applicationId/:fileName", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+app.listen(4000, () => {
+    console.log("Server running on http://localhost:4000");
 });
 
 export const handler = serverless(app);
