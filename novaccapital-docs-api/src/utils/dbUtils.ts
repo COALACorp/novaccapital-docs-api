@@ -13,16 +13,16 @@ const db = knex({
 
 const TableName = "document";
 
-export async function create(guid, applicationId, name) {
-    let path = `docs/${guid}/${applicationId}/${name}`;
-    let createdDocument = await db(TableName).insert({
+export async function create(guid: string, applicationId: string, name: string) {
+    const path = `docs/${guid}/${applicationId}/${name}`;
+    const createdDocument = await db(TableName).insert({
         application_id: applicationId, name, path: path
     });
     return createdDocument;
 }
 
-export async function remove(guid, applicationId, name) {
-    let path = `docs/${guid}/${applicationId}/${name}`;
+export async function remove(guid: string, applicationId: string, name: string) {
+    const path = `docs/${guid}/${applicationId}/${name}`;
     return await db(TableName).where('path', path).del();
 }
 

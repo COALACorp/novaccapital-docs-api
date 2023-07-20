@@ -1,6 +1,8 @@
+import { Request, Response } from "express";
+
 import { getFileUrl } from "../utils/s3Utils.js";
 
-export const downloadTemplateController = async (req, res) => {
+export const downloadTemplateController = async (req: Request, res: Response) => {
     try {
         const { fileName } = req.params;
 

@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({ region: "us-east-1" });
 
-export const getFileUrl = async (fileKey) => {
+export const getFileUrl = async (fileKey: string) => {
     const command = new GetObjectCommand({
         Bucket: "novacapitaldocs",
         Key: fileKey,
@@ -14,7 +14,7 @@ export const getFileUrl = async (fileKey) => {
     return signedUrl;
 };
 
-export const uploadFile = async (fileKey, file) => {
+export const uploadFile = async (fileKey: string, file: Express.Multer.File) => {
     const command = new PutObjectCommand({
         Bucket: "novacapitaldocs",
         Key: fileKey,
@@ -26,7 +26,7 @@ export const uploadFile = async (fileKey, file) => {
     return;
 };
 
-export const deleteFile = async (fileKey) => {
+export const deleteFile = async (fileKey: string) => {
     const command = new DeleteObjectCommand({
         Bucket: "novacapitaldocs",
         Key: fileKey,
