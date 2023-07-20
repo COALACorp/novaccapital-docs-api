@@ -1,4 +1,5 @@
-import s3 from "../utils/s3Utils.js";
+import s3Utils from "../utils/s3Utils.js";
+import dbUtils from "../utils/dbUtils.js";
 
 export const downloadFileController = async (req, res) => {
     try {
@@ -13,7 +14,7 @@ export const downloadFileController = async (req, res) => {
         else if (!fileName)
             return res.status(400).json({ message: "Missing file name", request: req.params });
         
-        const signedUrl = await s3.getFileUrl(`docs/${guid}/${applicationId}/${fileName}`); // URL expiration time in seconds (adjust as needed)
+        const signedUrl = await s3Utils.getFileUrl(`docs/${guid}/${applicationId}/${fileName}`); // URL expiration time in seconds (adjust as needed)
 
         res.status(200).json({ url: signedUrl });
     } catch (error) {
@@ -39,11 +40,11 @@ export const uploadFileController = async (req, res) => {
             return res.status(400).json({ message: "Missing file", request: req.file });
 
         // const { originalname } = file;
-        const fileKey = `docs/${guid}/${applicationId}/${fileName}`;
 
-        await s3.uploadFile(fileKey, file);
+        await s3Utils.uploadFile(`docs/${guid}/${applicationId}/${fileName}`, file); // Upload file to S3
+        const documentCreated = await dbUtils.create(guid, applicationId, fileName); // Create file in DB
 
-        res.status(200).json({ message: "File uploaded successfully" });
+        res.status(200).json({ message: "File uploaded successfully", documentId: documentCreated[0] });
     } catch (error) {
         console.error("Error uploading file:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -63,11 +64,10 @@ export const deleteFileController = async (req, res) => {
         else if (!fileName)
             return res.status(400).json({ message: "Missing file name", request: req.params });
 
-        const fileKey = `docs/${guid}/${applicationId}/${fileName}`;
-        
-        await s3.deleteFile(fileKey);
+        await s3Utils.deleteFile(`docs/${guid}/${applicationId}/${fileName}`); // Upload file to S3
+        const documentCreated = await dbUtils.remove(guid, applicationId, fileName); // Create file in DB
 
-        res.status(200).json({ message: "File deleted successfully" });
+        res.status(200).json({ message: "File deleted successfully", documentId: documentCreated[0] });
     } catch (error) {
         console.error("Error deleting file:", error);
         res.status(500).json({ error: "Internal server error" });
