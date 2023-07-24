@@ -18,6 +18,7 @@ try {
         
         const signedUrl = await s3Utils.getFileUrl(`docs/${guid}/${applicationId}/${fileName}`); // URL expiration time in seconds (adjust as needed)
 
+        console.log("Response Headers:", res.getHeaders());
         res.status(200).json({ url: signedUrl });
     } catch (error) {
         console.error("Error downloading file:", error);
@@ -46,6 +47,7 @@ export const uploadFileController = async (req: Request, res: Response) => {
         await s3Utils.uploadFile(`docs/${guid}/${applicationId}/${fileName}`, file); // Upload file to S3
         const documentCreated = await dbUtils.create(guid, applicationId, fileName); // Create file in DB
 
+        console.log("Response Headers:", res.getHeaders());
         res.status(200).json({ message: "File uploaded successfully", documentId: documentCreated[0] });
     } catch (error) {
         console.error("Error uploading file:", error);
@@ -69,6 +71,7 @@ export const deleteFileController = async (req: Request, res: Response) => {
         await s3Utils.deleteFile(`docs/${guid}/${applicationId}/${fileName}`); // Upload file to S3
         const documentRemoved = await dbUtils.remove(guid, applicationId, fileName); // Create file in DB
 
+        console.log("Response Headers:", res.getHeaders());
         res.status(200).json({ message: "File deleted successfully", documentId: documentRemoved });
     } catch (error) {
         console.error("Error deleting file:", error);
