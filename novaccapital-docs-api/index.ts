@@ -5,7 +5,7 @@ import multer from "multer";
 import { downloadTemplateController } from "./src/controllers/templatesController.js";
 import { downloadFileController, uploadFileController, deleteFileController } from "./src/controllers/filesController.js";
 
-const PORT = 4000;
+const PORT = 3000;
 
 const app = express();
 app.use(cors());
