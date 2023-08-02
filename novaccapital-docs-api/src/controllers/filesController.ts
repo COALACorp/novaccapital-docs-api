@@ -6,6 +6,7 @@ import dbUtils from "../utils/dbUtils.js";
 export const downloadFileController = async (req: Request, res: Response) => {
 try {
         const { guid, applicationId, fileName } = req.params;
+        const { downloadFileName } = req.query;
 
         console.log(`Request to: /download/${guid}/${applicationId}/${fileName}`);
         
@@ -16,7 +17,7 @@ try {
         else if (!fileName)
             return res.status(400).json({ message: "Missing file name", request: req.params });
         
-        const signedUrl = await s3Utils.getFileUrl(`docs/${guid}/${applicationId}/${fileName}`); // URL expiration time in seconds (adjust as needed)
+        const signedUrl = await s3Utils.getFileUrl(`docs/${guid}/${applicationId}/${fileName}`, downloadFileName as string); // URL expiration time in seconds (adjust as needed)
 
         console.log("Response Headers:", res.getHeaders());
         res.status(200).json({ url: signedUrl });

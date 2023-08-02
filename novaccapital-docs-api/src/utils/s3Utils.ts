@@ -3,13 +3,14 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({ region: "us-east-1" });
 
-export const getFileUrl = async (fileKey: string) => {
+export const getFileUrl = async (fileKey: string, downloadFilename?: string) => {
     const command = new GetObjectCommand({
         Bucket: "novacapitaldocs",
         Key: fileKey,
+        ...(downloadFilename && { ResponseContentDisposition: `attachment; filename="${downloadFilename}"` }),
     });
 
-    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 5 }); // URL expiration time in seconds (adjust as needed)
+    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 5 },); // URL expiration time in seconds (adjust as needed)
 
     return signedUrl;
 };
