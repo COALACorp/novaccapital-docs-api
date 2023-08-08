@@ -1,18 +1,10 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer";
 
-type MessageBody = {
-    to: string,
-    subject: string,
-    body: {
-        text: string,
-        html: string,
-    },
-};
+import message from "./templates/message";
 
-export const sendMessage = async (req: Request<MessageBody>, res: Response) => {
-    const { to, subject, body } = req.body;
-    const { text, html } = body;
+export const sendMessage = async (req: Request, res: Response) => {
+    const { to, name, subject, content } = req.body;
 
     // Replace these credentials with your actual email account details
     const smtpConfig = {
@@ -35,8 +27,8 @@ export const sendMessage = async (req: Request<MessageBody>, res: Response) => {
             from: process.env.EMAIL_SENDER,
             to: to,
             subject: subject,
-            text: text,
-            html: html,
+            // text: text,
+            html: message(name, content),
         };
 
         // Send the email
@@ -46,7 +38,7 @@ export const sendMessage = async (req: Request<MessageBody>, res: Response) => {
         res.status(200).json({ message: "Email sent successfully" });
     } catch (error) {
         console.error("Error sending email:", error);
-        res.status(500).json({ message: "Error sending email", error });
+        res.status(500).json({ message: "Error sending email" });
     }
 };
 
