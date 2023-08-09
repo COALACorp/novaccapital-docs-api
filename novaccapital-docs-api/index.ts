@@ -5,7 +5,7 @@ import cors from "cors";
 import docsRouter from "./src/routes/docs/docsRouter";
 import emailRouter from "./src/routes/email/emailRouter";
 
-const PORT = 4000;
+const PORT = process.env.SERVER_PORT;
 
 const app = express();
 app.use(cors());
