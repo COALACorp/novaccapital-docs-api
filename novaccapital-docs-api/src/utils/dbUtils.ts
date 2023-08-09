@@ -38,7 +38,10 @@ export async function create(guid: string, applicationId: string, name: string) 
 
 export async function remove(guid: string, applicationId: string, name: string) {
     const path = `docs/${guid}/${applicationId}/${name}`;
-    return await db("document").where('path', path).del();
+    const removedDocument = await db("document").where('path', path).del()
+    const progress = (await getCountByApp(guid, applicationId))/(await getCount());
+    await updateProgress(applicationId, progress);
+    return removedDocument;
 }
 
 export default { create, remove };
