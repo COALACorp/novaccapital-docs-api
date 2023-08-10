@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { sendMessage } from "../../controllers/email/emailController";
+import { sendAppApprovedStatus, sendDocDeniedStatus } from "../../controllers/email/emailController";
 
 const router = Router();
 
-router.post("/message", sendMessage);
+router.post("/application/approved", sendAppApprovedStatus);
+router.post("/docs/denied", sendDocDeniedStatus);
 
 export default router;

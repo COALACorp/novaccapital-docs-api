@@ -1,13 +1,19 @@
 import { Request, Response } from "express";
 
 import { sendHtmlEmail } from "../../utils/email";
-import message from "./templates/message";
+import approved from "./templates/approved";
+import denied from "./templates/denied";
 
-export const sendMessage = async (req: Request, res: Response) => {
-    const { to, name, subject, content } = req.body;
+export const sendAppApprovedStatus = async (req: Request, res: Response) => {
+    const { email, userName } = req.body;
 
     try {
-        await sendHtmlEmail(to, subject, message(name, content));
+        if (!(email && userName)) {
+            res.status(400).json({ message: "Expected attributes: email and userName" });
+            return;
+        }
+
+        await sendHtmlEmail(email, "Aprobación de solicitud", approved(userName));
 
         console.log("Email sent successfully");
         res.status(200).json({ message: "Email sent successfully" });
@@ -17,4 +23,23 @@ export const sendMessage = async (req: Request, res: Response) => {
     }
 };
 
-export default { sendMessage };
+export const sendDocDeniedStatus = async (req: Request, res: Response) => {
+    const { email, userName, fileName, reason } = req.body;
+
+    try {
+        if (!(email && userName && fileName && reason)) {
+            res.status(400).json({ message: "Expected attributes: email, userName, fileName and reason" });
+            return;
+        }
+
+        await sendHtmlEmail(email, "Denegación del Documento en el Checklist", denied(userName, fileName, reason));
+
+        console.log("Email sent successfully");
+        res.status(200).json({ message: "Email sent successfully" });
+    } catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ message: "Error sending email" });
+    }
+};
+
+export default { sendDocDeniedStatus };
