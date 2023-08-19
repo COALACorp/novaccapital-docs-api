@@ -42,9 +42,10 @@ export const sendHtmlEmail = async (to: string, subject: string, html: string) =
 
     // Send the email
     try {
+        console.log("Send email try 1")
         return await sendEmail(mailOptions);
     } catch (error) {
-        console.log("Email sent from catch");
+        console.log("Send email try 2");
         return await sendEmail(mailOptions);
     }
 };

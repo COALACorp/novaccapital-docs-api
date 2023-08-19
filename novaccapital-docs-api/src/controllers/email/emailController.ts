@@ -5,9 +5,11 @@ import approved from "./templates/approved";
 import denied from "./templates/denied";
 
 export const sendAppApprovedStatus = async (req: Request, res: Response) => {
-    const { email, userName } = req.body;
-
     try {
+        const { email, userName } = req.body;
+
+        console.log("Request to: /application/approved");
+
         if (!(email && userName)) {
             res.status(400).json({ message: "Expected attributes: email and userName" });
             return;
@@ -24,9 +26,11 @@ export const sendAppApprovedStatus = async (req: Request, res: Response) => {
 };
 
 export const sendDocDeniedStatus = async (req: Request, res: Response) => {
-    const { email, userName, fileName, reason } = req.body;
-
     try {
+        const { email, userName, fileName, reason } = req.body;
+
+        console.log("Request to: /docs/denied");
+
         if (!(email && userName && fileName && reason)) {
             res.status(400).json({ message: "Expected attributes: email, userName, fileName and reason" });
             return;
