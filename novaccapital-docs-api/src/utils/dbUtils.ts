@@ -55,7 +55,6 @@ export async function create(guid: string, applicationId: string, name: string) 
         application_id: applicationId, name, path: path
     });
     const progress = await calculateProgress(guid, applicationId);
-    console.log(progress);
     await updateProgress(applicationId, progress);
     return createdDocument;
 }
@@ -64,7 +63,6 @@ export async function remove(guid: string, applicationId: string, name: string) 
     const path = `docs/${guid}/${applicationId}/${name}`;
     const removedDocument = await db("document").where('path', path).del()
     const progress = await calculateProgress(guid, applicationId);
-    console.log(progress);
     await updateProgress(applicationId, progress);
     return removedDocument;
 }
